@@ -1,0 +1,34 @@
+restaurant_id,store_id,city,state,postal_code,latitude,longitude,status,has_breakfast,has_delivery,has_dine_in,has_drive_thru,has_mobile_ordering,has_take_out,pos_vendor,total_weekly_hours
+restaurant_1994,3583,LIHUE,Hawaii,96766-1676,21.972251,-159.379229,Open,True,True,True,True,True,True,SICOM,112.0
+restaurant_4087,7130,KAPAA,Hawaii,96746-1665,22.069882,-159.319752,Open,True,True,True,True,True,True,SICOM,112.0
+restaurant_1644,2996,WAIANAE,Hawaii,96792-3000,21.435343,-158.184573,Open,True,True,True,True,True,True,SICOM,112.0
+restaurant_8882,14838,Schofield Barracks,Hawaii,96857,21.494018,-158.060645,Open,True,False,True,True,False,True,SICOM,71.0
+restaurant_10160,16356,SCHOFIELD BARRACKS,Hawaii,96857,21.494104,-158.060757,Open,False,False,True,True,False,True,SICOM,101.0
+restaurant_1563,2857,PEARL CITY,Hawaii,96782-3223,21.38769,-157.95442,Open,True,True,True,True,True,True,SICOM,112.0
+restaurant_5390,9579,HICKAM AFB,Hawaii,96853,21.34241,-157.949174,Open,False,False,True,True,False,True,SICOM,110.5
+restaurant_1207,2276,KANEOHE,Hawaii,96744-2017,21.40125,-157.800209,Open,True,True,True,True,True,True,SICOM,112.0
+restaurant_4569,8022,HONOLULU,Hawaii,96819-1890,21.331662,-157.920038,Open,False,False,False,True,False,True,SICOM,0
+restaurant_8051,13711,HONOLULU,Hawaii,96819-1890,21.330961,-157.923459,Open,False,False,True,True,False,True,SICOM,115.5
+restaurant_10348,16577,HONOLULU,Hawaii,96819-1890,21.331297,-157.920011,Open,False,False,True,True,False,True,SICOM,56.0
+restaurant_3727,6531,KAILUA,Hawaii,96734-1727,21.422566,-157.747751,Open,True,True,True,True,True,True,SICOM,112.0
+restaurant_3886,6800,HONOLULU,Hawaii,96817-4885,21.324472,-157.877353,Open,True,True,True,True,True,True,SICOM,112.0
+restaurant_8796,14728,EWA BEACH,Hawaii,96706-2246,21.317683,-158.013228,Open,True,True,True,True,True,True,SICOM,112.0
+restaurant_7782,13312,KAPOLEI,Hawaii,96707-2052,21.33767,-158.078893,Open,True,True,True,True,True,True,SICOM,112.0
+restaurant_238646,28560,Honolulu,Hawaii,96814,21.29965,-157.83859,Open,True,True,True,True,True,True,SICOM,112.0
+restaurant_1301,2436,HONOLULU,Hawaii,96826-1512,21.292864,-157.822806,Open,True,True,True,True,True,True,SICOM,112.0
+restaurant_88457,28226,Honolulu,Hawaii,96815,21.281858,-157.830317,Open,True,True,True,False,True,True,SICOM,105.0
+restaurant_10620,16889,"KAHULUI, MAUI",Hawaii,96732-2327,20.892901,-156.436932,Open,False,False,True,True,False,True,SICOM,106.0
+restaurant_1371,2536,"KAHULUI, MAUI",Hawaii,96732-1619,20.890877,-156.467522,Open,True,True,True,True,True,True,SICOM,112.0
+restaurant_11618,18000,LAHAINA,Hawaii,96761-2739,20.90438,-156.62352,Open,True,False,True,True,False,True,SICOM,104.0
+restaurant_11078,17410,WAIMEA,Hawaii,96743-7304,20.021553,-155.666977,Open,True,True,True,True,True,True,SICOM,112.0
+restaurant_2388,4282,KAILUA KONA,Hawaii,96740-1610,19.642772,-155.994354,Open,True,True,True,True,True,True,SICOM,112.0
+restaurant_11440,17803,PAHOA,Hawaii,96778-6604,19.504033,-154.955491,Open,True,True,True,True,True,True,SICOM,112.0
+restaurant_10970,17293,HILO,Hawaii,96720,19.699451,-155.061654,Open,True,True,True,True,True,True,SICOM,112.0
+restaurant_3751,6565,Fort Wainwright,Alaska,99703-5002,64.820966,-147.634278,Open,False,False,False,True,False,True,SICOM,0
+restaurant_10237,16444,EIELSON AFB,Alaska,99702-0000,64.67702,-147.089577,Open,False,False,True,True,False,True,SICOM,0
+restaurant_1724,3124,ANCHORAGE,Alaska,99503-2306,61.195538,-149.909944,Open,True,True,False,True,True,True,SICOM,0
+restaurant_3752,6566,ANCHORAGE,Alaska,99506-0000,61.239739,-149.806069,Open,True,False,True,True,False,True,SICOM,77.0
+restaurant_2697,4817,ANCHORAGE,Alaska,99508-2029,61.215344,-149.813105,Open,True,True,True,True,True,True,SICOM,111.0
+restaurant_3762,6582,ANCHORAGE,Alaska,99505-0000,61.252153,-149.691912,Open,True,False,True,True,False,True,SICOM,83.5
+restaurant_1931,3480,ANCHORAGE,Alaska,99515-2006,61.144334,-149.865087,Open,True,True,True,True,True,True,SICOM,111.0
+restaurant_2867,5133,WASILLA,Alaska,99654-8237,61.577106,-149.411776,Open,True,True,True,True,True,True,SICOM,97.0

@@ -1,0 +1,49 @@
+query GetPicker($id: ID!) {
+  Picker(id: $id) {
+    _id
+    name {
+      locale: en
+    }
+    description {
+      localeRaw: enRaw
+    }
+    options {
+      option {
+        ... on Item {
+          name {
+            locale: en
+          }
+          description {
+            localeRaw: enRaw
+          }
+          isDummyItem
+          nutrition {
+            calories
+            fat
+            saturatedFat
+            transFat
+            cholesterol
+            sodium
+            carbohydrates
+            fiber
+            sugar
+            proteins
+          }
+          image {
+            asset {
+              _id
+              url
+            }
+          }
+          productHierarchy {
+            L1
+            L2
+            L3
+            L4
+            L5
+          }
+        }
+      }
+    }
+  }
+}
