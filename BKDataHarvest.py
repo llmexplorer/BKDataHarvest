@@ -2,6 +2,10 @@ from BKClient import BKClient
 import time
 import csv
 import os
+import argparse
+import asyncpg
+import asyncio
+from datetime import datetime
 
 bkc = BKClient()
 
@@ -304,6 +308,40 @@ def simple_restaurants(restaurants):
     return [restaurant for restaurant in result if restaurant is not None]
 
 
+async def upload_to_db(restaurants=None, menu_items=None, item_info=None):
+    """
+    Supply a CSV filename to any parameter. Upload the CSV to the respective table in the database.
+    """
+    postgres_password = os.environ.get("POSTGRES_PASSWORD", "postgres123")
+
+    batch_size = 1_000
+
+    conn = await asyncpg.connect('postgresql://localhost:5432', user='postgres', password=postgres_password, database='inflation')
+
+    async with conn.transaction():
+        if menu_items:
+            file = csv.reader(open(menu_items, 'r', newline=''))
+            # skip the header
+            next(file)
+
+            batch = []
+            for row in file:
+                correct_row = [int(row[0]), row[1], row[2] == True, float(row[3]), float(row[4]), float(row[5]), float(row[6]), datetime.strptime(row[7], '%Y-%m-%d')]
+                batch.append(correct_row)
+                if len(batch) == batch_size:
+                    await conn.executemany('INSERT INTO bk_menuitems (store_id, item_id, isAvailable, price_min, price_max, price_default, avg_calories, created_date) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)', batch)
+                    batch = []
+                    print(f"Inserted {batch_size} rows")
+
+            if batch:
+                await conn.executemany('INSERT INTO bk_menuitems (store_id, item_id, isAvailable, price_min, price_max, price_default, avg_calories, created_date) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)', batch)
+
+# Example usage
+# await upload_to_db(restaurants='restaurants.csv', menu_items='menu_items.csv', item_info='item_info.csv')
+
+
+
+
 def menu_items_update():
     """
     Find the most recent restaurants list in the Temp folder.  Use the store ids to get the most recent menu items from the BK API.
@@ -332,5 +370,17 @@ def menu_items_update():
 
 
 
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='Harvest Burger King data')
+    parser.add_argument('--all', action='store_true', help='Get menu items, restaurants, and item info')
+    parser.add_argument('--menuitems_only', action='store_true', help='Just get menu items')
+    args = parser.parse_args()
 
-menu_items_update()
+    if args.all:
+        whole_harvest()
+    elif args.menuitems_only:
+        menu_items_update()
+    else:
+        print("No arguments given.  Use --harvest to harvest the data or --update to update the menu items.")
+
+        asyncio.run(upload_to_db(menu_items=r"C:\Users\maxim\projects\BKDataHarvest\Temp\2024-03-14-bk_data.csv"))
