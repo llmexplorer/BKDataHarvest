@@ -314,7 +314,7 @@ async def upload_to_db(restaurants=None, menu_items=None, item_info=None):
     """
     postgres_password = os.environ.get("POSTGRES_PASSWORD", "postgres123")
 
-    batch_size = 1_000
+    batch_size = 100_000
 
     conn = await asyncpg.connect('postgresql://localhost:5432', user='postgres', password=postgres_password, database='inflation')
 
@@ -359,7 +359,8 @@ def menu_items_update():
 
     # Read the store ids from the restaurants file
     store_ids = set()
-    with open(f'Temp{os.sep}{restaurants_file}', 'r', newline='') as file:
+    filename = f'Temp{os.sep}{restaurants_file}'
+    with open(filename, 'r', newline='') as file:
         reader = csv.reader(file)
         next(reader)
         for row in reader:
@@ -367,6 +368,8 @@ def menu_items_update():
 
 
     write_menu_items_to_csv(list(store_ids))
+
+    return filename
 
 
 
@@ -379,8 +382,7 @@ if __name__ == "__main__":
     if args.all:
         whole_harvest()
     elif args.menuitems_only:
-        menu_items_update()
+        filename = menu_items_update()
+        asyncio.run(upload_to_db(menu_items=filename))
     else:
         print("No arguments given.  Use --harvest to harvest the data or --update to update the menu items.")
-
-        asyncio.run(upload_to_db(menu_items=r"C:\Users\maxim\projects\BKDataHarvest\Temp\2024-03-14-bk_data.csv"))

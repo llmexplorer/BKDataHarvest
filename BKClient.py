@@ -40,6 +40,34 @@ class BKClient:
             d = d[key]
 
         return False
+    
+
+    def key_sequence_or_none(self, d, key_list):
+        """
+        If the list of keys exists in the dictionary, return the value. Otherwise, return None.
+
+        Args:
+            d (dict): The dictionary to check.
+            key_list (list): A list of keys that form the hierarchy to check.
+
+        Returns:
+            dict: The value at the end of the key hierarchy, or None if the hierarchy does not exist.
+        """
+
+        result = None
+
+        cur = 0
+        cur_key = key_list[cur]
+
+        while cur_key in d or (type(d) == list and type(cur_key) == int and len(d) > cur_key):
+            d = d[cur_key]
+            cur += 1
+            if cur == len(key_list):
+                result = d
+                break
+            cur_key = key_list[cur]
+
+        return result
 
 
     def get_menu(self, store_id, session=None):
@@ -227,42 +255,41 @@ class BKClient:
         if resp.status_code == 200:
             j = resp.json()
 
-        if "data" in j and "Picker" in j["data"]:
-            options = j['data']['Picker'].get('options', [])
-            zero_option = options[0] if options else None
+        if "data" not in j:
+            print("Data not in j")
+            return None
 
-            if not zero_option:
-                return None
-            
-            zero_option = options[0].get('option') if options else None
+        data = j["data"]
 
-            if zero_option is None:
-                return None
+        if type(data) != dict or 'Picker' not in data or data['Picker'] is None:
+            return None
+        
 
-            if 'name' not in zero_option or 'locale' not in zero_option['name']:
-                return None
-            
-            if 'image' not in zero_option or 'asset' not in zero_option['image']:
-                return None
-            
-            if 'nutrition' not in zero_option:
-                return None
-            
-            if 'isDummyItem' not in zero_option:
-                return None
-            
-            if self.any_not_in(zero_option, ['productHierarchy', 'L2']):
-                category = "Not categorized"
-            else:
-                category = j['data']['Picker']['options'][0]['option']['productHierarchy']['L2']
+        # ItemInfo(item_id, "Name", "Image", "Nutrition", False, "Category")
+        item_id = item_id
+        name = self.key_sequence_or_none(data, ['Picker', 'name', 'locale'])
+        image_url = self.key_sequence_or_none(data, ['Item', 'image', 'asset', 'url'])
+        if image_url is not None and image_url.startswith("image-"):
+            image_url = f"https://cdn.sanity.io/images/czqk28jt/prod_bk_us/{image_url}"
+        nutrition = self.key_sequence_or_none(data, ['Item', 'nutrition'])
+        is_dummy = self.key_sequence_or_none(data, ['Item', 'isDummyItem']) != None
+        hierarchy = self.key_sequence_or_none(data, ['Item', 'productHierarchy', 'L2'])
 
-            name = j['data']['Picker']['options'][0]['option']['name']['locale']
-            image_url = j['data']['Picker']['options'][0]['option']['image']['asset']['url']
-            nutrition = j['data']['Picker']['options'][0]['option']['nutrition']
-            is_dummy = j['data']['Picker']['options'][0]['option']['isDummyItem'] != None
-            
 
-            return ItemInfo(item_id, name, image_url, nutrition, is_dummy, category)
+        if image_url is None:
+            image_url = self.key_sequence_or_none(data, ['Picker', 'options', 0, 'option', 'image', 'asset', 'url'])
+
+        if nutrition is None:
+            nutrition = self.key_sequence_or_none(data, ['Picker', 'options', 0, 'option', 'nutrition'])
+
+        if hierarchy is None:
+            hierarchy = self.key_sequence_or_none(data, ['Picker', 'options', 0, 'option', 'productHierarchy', 'L2'])
+
+
+        return ItemInfo(item_id, name, image_url, nutrition, is_dummy, hierarchy)
+
+            
+            
     
 
     def get_many_item_info(self, item_ids, threads=1):
