@@ -56,16 +56,21 @@ class BKClient:
 
         result = None
 
-        cur = 0
-        cur_key = key_list[cur]
+        try:
 
-        while cur_key in d or (type(d) == list and type(cur_key) == int and len(d) > cur_key):
-            d = d[cur_key]
-            cur += 1
-            if cur == len(key_list):
-                result = d
-                break
+            cur = 0
             cur_key = key_list[cur]
+
+            while cur_key in d or (type(d) == list and type(cur_key) == int and len(d) > cur_key):
+                d = d[cur_key]
+                cur += 1
+                if cur == len(key_list):
+                    result = d
+                    break
+                cur_key = key_list[cur]
+
+        except:
+            pass
 
         return result
 

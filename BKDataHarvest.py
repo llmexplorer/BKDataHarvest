@@ -34,8 +34,10 @@ def search_usa():
     }
 
     contiguous_states = bkc.search_lat_lon(**contiguous_states)
+    contiguous_states = {}
     hawaii = bkc.search_lat_lon(**hawaii)
     alaska = bkc.search_lat_lon(**alaska)
+    alaska = {}
 
     return {**contiguous_states, **hawaii, **alaska}
 
@@ -207,7 +209,7 @@ def write_menu_items_to_csv(store_ids):
     return all_item_ids
 
 
-def whole_harvest():
+def whole_harvest(upload=False):
     stores = search_usa()
     store_ids = list(stores.keys())
     # prefix for current date YYYY-MM-DD-
@@ -224,6 +226,9 @@ def whole_harvest():
 
     all_item_ids = write_menu_items_to_csv(store_ids)
 
+    if upload:
+        asyncio.run(upload_to_db(restaurants=f'Temp{os.sep}{save_prefix}bk_restaurants.csv', menu_items=f'Temp{os.sep}{save_prefix}bk_data.csv'))
+
     print("Finished all stores")
 
     all_item_infos = bkc.get_many_item_info(list(all_item_ids), threads=10)
@@ -236,12 +241,15 @@ def whole_harvest():
 
         rows = []
         for item_id, item_info in all_item_infos.items():
-            row = (item_id, item_info.name, item_info.image_url, item_info.nutrition['calories'], item_info.nutrition['fat'], item_info.nutrition['saturatedFat'], item_info.nutrition['transFat'], item_info.nutrition['cholesterol'], item_info.nutrition['sodium'], item_info.nutrition['carbohydrates'], item_info.nutrition['fiber'], item_info.nutrition['sugar'], item_info.nutrition['proteins'], item_info.is_dummy, item_info.category)
+            row = (item_id, item_info.name, item_info.image_url, item_info.nutrition['calories'] if item_info.nutrition else "", item_info.nutrition['fat'] if item_info.nutrition else "", item_info.nutrition['saturatedFat'] if item_info.nutrition else "", item_info.nutrition['transFat'] if item_info.nutrition else "", item_info.nutrition['cholesterol'] if item_info.nutrition else "", item_info.nutrition['sodium'] if item_info.nutrition else "", item_info.nutrition['carbohydrates'] if item_info.nutrition else "", item_info.nutrition['fiber'] if item_info.nutrition else "", item_info.nutrition['sugar'] if item_info.nutrition else "", item_info.nutrition['proteins'] if item_info.nutrition else "", item_info.is_dummy, item_info.category)
             rows.append(row)
 
         writer.writerows(rows)
 
     print("Finished all items")
+
+    if upload:
+        asyncio.run(upload_to_db(item_info=f'Temp{os.sep}{save_prefix}bk_items.csv'))
 
 
 
@@ -377,12 +385,13 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Harvest Burger King data')
     parser.add_argument('--all', action='store_true', help='Get menu items, restaurants, and item info')
     parser.add_argument('--menuitems_only', action='store_true', help='Just get menu items')
+    parser.add_argument("--upload", action="store_true", help="Upload the data to the database")
     args = parser.parse_args()
 
     if args.all:
-        whole_harvest()
+        whole_harvest(upload=args.upload)
     elif args.menuitems_only:
         filename = menu_items_update()
         asyncio.run(upload_to_db(menu_items=filename))
     else:
-        print("No arguments given.  Use --harvest to harvest the data or --update to update the menu items.")
+        print("No arguments given.  Use --menuitems_only to harvest the data or --all to update all information.")
