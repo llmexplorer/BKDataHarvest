@@ -34,10 +34,8 @@ def search_usa():
     }
 
     contiguous_states = bkc.search_lat_lon(**contiguous_states)
-    contiguous_states = {}
     hawaii = bkc.search_lat_lon(**hawaii)
     alaska = bkc.search_lat_lon(**alaska)
-    alaska = {}
 
     return {**contiguous_states, **hawaii, **alaska}
 
